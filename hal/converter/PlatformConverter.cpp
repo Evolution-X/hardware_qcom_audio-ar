@@ -445,7 +445,13 @@ outputFlagsStreamtypeMap populatemOutputFlagsStreamtypeMap() {
 const static outputFlagsStreamtypeMap kOutputFlagsStreamtypeMap =
         populatemOutputFlagsStreamtypeMap();
 pal_stream_type_t PlatformConverter::getPalStreamTypeId(int32_t outputFlag) noexcept {
-    return kOutputFlagsStreamtypeMap.at(outputFlag);
+    const auto element = kOutputFlagsStreamtypeMap.find(outputFlag);
+    if (element == kOutputFlagsStreamtypeMap.cend()) {
+        LOG(WARNING) << __func__ << " no pal stream type for output flags 0x" << std::hex
+                     << outputFlag << ", using deep buffer";
+        return PAL_STREAM_DEEP_BUFFER;
+    }
+    return element->second;
 }
 
 // static
